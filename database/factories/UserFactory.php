@@ -25,11 +25,20 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'is_admin' => false,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('000000'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function admin(): Factory {
+        return $this->state(function (array $attributes) {
+            return [
+                'is_admin' => true,
+            ];
+        });
     }
 
     /**
