@@ -1,9 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "todolist/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "description": "Backend for todolist-service",
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
