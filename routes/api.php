@@ -22,4 +22,5 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:api')->group(function() {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::apiResource('/notes', NoteController::class);
+    Route::patch('/notes/{note}/completed', [NoteController::class, 'completed'])->name('notes.completed');
 });

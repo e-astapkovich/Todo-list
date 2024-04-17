@@ -69,10 +69,18 @@ class NoteController extends Controller
     }
 
     /**
-     * TODO Реализовать метод установки статуса "выполнено" для заметки
+     * Set complete status for note
      */
-    public function completed() {
+    public function completed(Note $note) {
+        abort_if(Auth::user()->id !== $note->user_id, 404);
 
+        $note->is_completed = true;
+
+        if ($note->save()) {
+            return response()->json(['status' => 'note marked as completed'], 200);
+        } else {
+            return response()->json(['status' => 'could not to mark a note as completed'], 422);
+        }
     }
 
     /**
