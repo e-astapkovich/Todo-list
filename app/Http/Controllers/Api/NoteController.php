@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Api\Controllers;
+namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Note;
-use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return $request->user()->notes;
     }
 
     /**
@@ -21,7 +22,20 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->only([
+            'title',
+            'description'
+        ]);
+
+        $note = new Note($data);
+        $note->user_id = $request->user()->id;
+        $note->is_completed = false;
+
+        if ($note->save()) {
+            return response()->json(['status' => 'new note created successfully'], 200);
+        } else {
+            return response()->json(['status' => 'could not add a note'], 422);
+        }
     }
 
     /**
@@ -29,7 +43,8 @@ class NoteController extends Controller
      */
     public function show(Note $note)
     {
-        //
+        abort_if(Auth::user()->id !== $note->user_id, 404);
+        return $note;
     }
 
     /**
@@ -37,7 +52,27 @@ class NoteController extends Controller
      */
     public function update(Request $request, Note $note)
     {
-        //
+        abort_if(Auth::user()->id !== $note->user_id, 404);
+
+        $data = $request->only([
+            'title',
+            'description'
+        ]);
+
+        $note->fill($data);
+
+        if ($note->save()) {
+            return response()->json(['status' => 'note updated successfully'], 200);
+        } else {
+            return response()->json(['status' => 'could not to update a note'], 422);
+        }
+    }
+
+    /**
+     * TODO Реализовать метод установки статуса "выполнено" для заметки
+     */
+    public function completed() {
+
     }
 
     /**
@@ -45,6 +80,12 @@ class NoteController extends Controller
      */
     public function destroy(Note $note)
     {
-        //
+        abort_if(Auth::user()->id !== $note->user_id, 404);
+
+        if ($note->delete()) {
+            return response()->json(['status' => 'the note was deleted successfully'], 200);
+        } else {
+            return response()->json(['status' => 'could not to delete the note'], 422);
+        }
     }
 }
