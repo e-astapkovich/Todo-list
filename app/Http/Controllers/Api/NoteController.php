@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Note;
+use App\Events\NoteCreated;
 
 class NoteController extends Controller
 {
@@ -32,6 +33,7 @@ class NoteController extends Controller
         $note->is_completed = false;
 
         if ($note->save()) {
+            NoteCreated::dispatch($note);
             return response()->json(['status' => 'new note created successfully'], 200);
         } else {
             return response()->json(['status' => 'could not add a note'], 422);
