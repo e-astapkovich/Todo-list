@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NoteController;
+use App\Http\Controllers\Api\Admin\NoteController as AdminNoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,4 +24,12 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::apiResource('/notes', NoteController::class);
     Route::patch('/notes/{note}/completed', [NoteController::class, 'completed'])->name('notes.completed');
+
+    Route::prefix('admin')->middleware('is.admin')->group(function() {
+        Route::resource('/notes', AdminNoteController::class)
+            ->only([
+                'index',
+                'show',
+            ]);
+    });
 });
