@@ -1,0 +1,309 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Todo-list - OpenAPI 3.0",
+    "description": "Это REST API для сервиса управления заметками пользователя.",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/e-astapkovich/Todo-list_test-tsk/1.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "http://localhost/"
+    }
+  ],
+  "paths": {
+    "/notes": {
+      "get": {
+        "tags": [
+          "note"
+        ],
+        "summary": "Get all notes of the current user",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "note"
+        ],
+        "summary": "Add new note.",
+        "requestBody": {
+          "description": "Add new note.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteStoreForm"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteStoreForm"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteStoreForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "new note created successfully"
+          },
+          "422": {
+            "description": "could not add a note"
+          }
+        }
+      }
+    },
+    "/notes/{noteId}": {
+      "get": {
+        "tags": [
+          "note"
+        ],
+        "summary": "Find note by ID",
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "description": "ID of note to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Note not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "note"
+        ],
+        "summary": "Edit note",
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "description": "ID of note to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Add new note.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteStoreForm"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteStoreForm"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteStoreForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "note updated successfully"
+          },
+          "422": {
+            "description": "could not to update a note"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "note"
+        ],
+        "summary": "Delete note by ID",
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "description": "ID of note to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Note not found"
+          }
+        }
+      }
+    },
+    "/note/{noteId}/completed": {
+      "patch": {
+        "tags": [
+          "note"
+        ],
+        "summary": "Mark note as completed",
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "description": "ID of note to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note marked as completed"
+          },
+          "422": {
+            "description": "could not to mark a note as completed"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Note": {
+        "required": [
+          "description",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "title": {
+            "type": "string",
+            "example": "Qui quo sunt ut."
+          },
+          "desctiption": {
+            "type": "string",
+            "example": "Et amet est explicabo. Id sed qui delectus unde dolorum sunt. Facilis nesciunt quam cupiditate adipisci dolorem. Et cupiditate et pariatur officiis."
+          },
+          "user_id": {
+            "$ref": "#/components/schemas/User"
+          },
+          "is_completed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "User": {
+        "required": [
+          "email",
+          "is_admin",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "name": {
+            "type": "string"
+          },
+          "is_admin": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "NoteStoreForm": {
+        "required": [
+          "description",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
